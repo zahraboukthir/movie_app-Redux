@@ -1,4 +1,10 @@
-import { ADDMOVIE, FILTERBYName } from "./actionsTypes";
+import {
+  ADDMOVIE,
+  DELETMOVIE,
+  EDITMOVIE,
+  FILTERBYName,
+  FILTERBYRate,
+} from "./actionsTypes";
 const initstate = {
   movieslist: [
     {
@@ -35,16 +41,37 @@ const initstate = {
       desc: "description 4",
     },
   ],
-  searchedname:""
+  searchedname: "",
+  ratevalue: 0,
 };
 const movieReducer = (state = initstate, { type, payload }) => {
   switch (type) {
     case ADDMOVIE:
       return { ...state, movieslist: [...state.movieslist, payload] };
+    case EDITMOVIE:
+      return {
+        ...state,
+        movieslist: state.movieslist.map((movie) =>
+          movie.id === payload.id ? { ...movie, ...payload.editedmovie } : movie
+        ),
+      };
+      case DELETMOVIE:
+      return {
+        ...state,
+        movieslist: state.movieslist.filter((movie) =>
+          movie.id !== payload
+        ),
+      };
     case FILTERBYName:
- return{
-  ...state,searchedname:payload
- }
+      return {
+        ...state,
+        searchedname: payload,
+      };
+    case FILTERBYRate:
+      return {
+        ...state,
+        ratevalue: payload,
+      };
     default:
       return state;
   }

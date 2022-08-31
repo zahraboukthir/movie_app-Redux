@@ -1,2 +1,5 @@
 export const ADDMOVIE="ADDMOVIE"
+export const EDITMOVIE="EDITMOVIE"
+export const DELETMOVIE="DELETMOVIE"
 export const FILTERBYName="FILTERBYName"
+export const FILTERBYRate="FILTERBYRate"

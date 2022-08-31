@@ -9,7 +9,7 @@ export const FilterBN = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(filterbyname(inp));
-  }, [inp]);
+  }, [inp,dispatch]);
 
   return (
     <div>

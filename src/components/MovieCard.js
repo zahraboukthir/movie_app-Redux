@@ -1,6 +1,10 @@
 import React from 'react'
+import { deletmovie } from '../js/actions'
+import EditMovie from './EditMovie'
+import { useDispatch } from 'react-redux';
 
 const MovieCard = ({el}) => {
+  const dispatch=useDispatch()
   return (
     <div className="card">
     
@@ -9,8 +13,9 @@ const MovieCard = ({el}) => {
       <h3 className="heading"> {el.name} </h3>
       <p className="paragraph"> {el.date} </p>
       <p className="paragraph"> {el.rating} </p>
-      <button variant="primary">
-           Description
+      <EditMovie el={el}/>
+      <button onClick={()=>dispatch(deletmovie(el.id))} variant="primary">
+           Delet movie
           </button>
       <br />
     </div>
