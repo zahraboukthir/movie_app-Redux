@@ -1,85 +1,115 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-
+import Rating from "@mui/material/Rating";
 import Modal from "react-modal";
-import { useDispatch } from "react-redux";
-import { editmovie } from './../js/actions';
-
-const customStyles = {
-  content: {
-    top: "50%",
-    left: "50%",
-    right: "auto",
-    bottom: "auto",
-    marginRight: "-50%",
-    transform: "translate(-50%, -50%)",
-  },
-};
+import { useDispatch, useSelector } from "react-redux";
+import { editmovie, moviedetails } from "./../js/actions";
+import { useParams, useNavigate } from "react-router-dom";
 
 // Make sure to bind modal to your appElement (https://reactcommunity.org/react-modal/accessibility/)
 Modal.setAppElement("#root");
 
-function EditMovie({el}) {
-  const [modalIsOpen, setIsOpen] = React.useState(false);
-  const dispatch=useDispatch()
-  const [oldMovie, setoldMovie] = useState({
-    image: el.image,
-    rating: el.rating,
-    name: el.name,
-    date: el.date,
-    desc: el.desc,
-  });
-  function openModal() {
-    setIsOpen(true);
-  }
+function EditMovie() {
+  const { id } = useParams();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(moviedetails(id));
+  }, [id, dispatch]);
 
-  function closeModal() {
-    setIsOpen(false);
-  }
+  const navigate = useNavigate();
+  const el = useSelector((state) => state.movieDetails);
+
+  useEffect(() => {
+    setoldMovie(el);
+    setRating(el.rating);
+  }, [el]);
+  const [rating, setRating] = React.useState(0);
+  const [oldMovie, setoldMovie] = useState({
+    image: "",
+    trailer: "",
+    name: "",
+    date: "",
+    desc: "",
+  });
+
   const handelSubmit = (e) => {
     e.preventDefault();
-  
-dispatch(editmovie(el.id,{...oldMovie,id:Math.random()}))
-setoldMovie({image: "",
-rating: 0,
-name: "",
-date: "",
-desc: "",})
-closeModal()  
-};
 
-  const handelchange = (e) => { 
-    setoldMovie({...oldMovie,[e.target.name]:e.target.value})
-   }
+    dispatch(editmovie(el.id, { ...oldMovie, rating, id: Math.random() }));
+    setRating(0);
+    setoldMovie({ image: "", name: "", date: "", desc: "", trailer: "" });
+    navigate("/");
+  };
+
+  const handelchange = (e) => {
+    setoldMovie({ ...oldMovie, [e.target.name]: e.target.value });
+  };
   return (
     <div>
-      <button onClick={openModal}>EDIT MOVIE</button>
+      {/* <button onClick={openModal}>EDIT MOVIE</button>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
         style={customStyles}
         contentLabel="Example Modal"
-      >
-        <div>I am a modal</div>
-        <form onSubmit={handelSubmit}>
-          <label htmlFor="">Name</label>
-          <input type="text" name="name" required onChange={handelchange} value={oldMovie.name} />
-          <label htmlFor="">Image</label>
-          <input type="url" name="image" required onChange={handelchange} value={oldMovie.image}  />
-          <label htmlFor="">date</label>
-          <input type="date" name="date" required onChange={handelchange} value={oldMovie.date} />
-          <label htmlFor="">Rate</label>
-          <input type="number" name="rating" required onChange={handelchange}value={oldMovie.rating} />
-          <label htmlFor="">Descreption</label>
-          <input type="text" name="desc" required onChange={handelchange}value={oldMovie.desc} />
-          <button>submit</button>
-          <button onClick={closeModal}>close</button>
-        </form>
-      </Modal>
+      > */}
+      <div>I am a modal</div>
+      <form onSubmit={handelSubmit}>
+        <label htmlFor="">Name</label>
+        <input
+          type="text"
+          name="name"
+          required
+          onChange={handelchange}
+          value={oldMovie.name}
+        />
+        <label htmlFor="">Image</label>
+        <input
+          type="url"
+          name="image"
+          required
+          onChange={handelchange}
+          value={oldMovie.image}
+        />
+        <label htmlFor="">Trailer</label>
+        <input
+          type="url"
+          name="trailer"
+          required
+          onChange={handelchange}
+          value={oldMovie.trailer}
+        />
+        <label htmlFor="">date</label>
+        <input
+          type="date"
+          name="date"
+          required
+          onChange={handelchange}
+          value={oldMovie.date}
+        />
+        <label htmlFor="">Rate</label>
+        <Rating
+          name="rating"
+          value={rating}
+          onChange={(event, newValue) => {
+            setRating(newValue);
+          }}
+        />
+        {/* <input type="number" name="rating" required onChange={handelchange}value={oldMovie.rating} /> */}
+        <label htmlFor="">Descreption</label>
+        <input
+          type="text"
+          name="desc"
+          required
+          onChange={handelchange}
+          value={oldMovie.desc}
+        />
+        <button>submit</button>
+        <button onClick={() => navigate("/")}>close</button>
+      </form>
+      {/* </Modal> */}
     </div>
   );
 }
 
-
-
-export default EditMovie
+export default EditMovie;
